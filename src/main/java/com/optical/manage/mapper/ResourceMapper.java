@@ -1,14 +1,16 @@
 package com.optical.manage.mapper;
 
+import com.optical.manage.DO.Resource;
 import com.optical.manage.dto.nlq.ParsedQuery;
-import com.optical.manage.model.Resource;
+
 import org.apache.ibatis.annotations.*;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface ResourceMapper {
+public interface ResourceMapper extends BaseMapper<Resource> {
     
     @Select("<script>" +
             "SELECT resources_id, type, ST_AsText(geom) AS geom, props, created_at, updated_at " +

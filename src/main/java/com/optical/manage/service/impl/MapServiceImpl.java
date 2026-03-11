@@ -1,11 +1,11 @@
 package com.optical.manage.service.impl;
 
 import com.optical.manage.dto.map.ResourceRequest;
+import com.optical.manage.DO.Resource;
 import com.optical.manage.dto.map.FiberSegmentRequest;
 import com.optical.manage.dto.map.MapQueryRequest;
 import com.optical.manage.dto.map.MapResponse;
 import com.optical.manage.mapper.ResourceMapper;
-import com.optical.manage.model.Resource;
 import com.optical.manage.service.MapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

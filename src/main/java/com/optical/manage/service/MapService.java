@@ -1,10 +1,10 @@
 package com.optical.manage.service;
 
 import com.optical.manage.dto.map.ResourceRequest;
+import com.optical.manage.DO.Resource;
 import com.optical.manage.dto.map.FiberSegmentRequest;
 import com.optical.manage.dto.map.MapQueryRequest;
 import com.optical.manage.dto.map.MapResponse;
-import com.optical.manage.model.Resource;
 
 public interface MapService {
     // 资源点操作
