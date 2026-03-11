@@ -1,6 +1,6 @@
 HELP.md
 API_USAGE.md
-src\main\resources\db\*.sql
+src/main/resources/db/*.sql
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
