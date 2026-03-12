@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk-slim
+FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/openjdk:21-jdk-slim
 
 WORKDIR /app
 

@@ -17,13 +17,13 @@ public class MapController {
     private MapService mapService;
     
     // 资源点操作
-    @PostMapping("/resources")
+    @PostMapping("/resource-point")
     public Map<String, Object> createResource(@RequestBody ResourceRequest request) {
         Long id = mapService.createResource(request);
         return Map.of("ok", true, "id", id);
     }
     
-    @GetMapping("/resources/{id}")
+    @GetMapping("/resource-point/{id}")
     public Object getResource(@PathVariable Long id) {
         return mapService.getResource(id);
     }
