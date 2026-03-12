@@ -9,8 +9,7 @@ COPY settings.gradle settings.gradle
 COPY build.gradle build.gradle
 COPY src src
 
-RUN chmod +x gradlew
-RUN ./gradlew build -x test
+RUN chmod +x gradlew && ./gradlew build -x test
 
 EXPOSE 8089
 
