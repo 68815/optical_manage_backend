@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.optical.manage.util.CoordinateTransform;
+
+
 
 @Service
 public class MapServiceImpl implements MapService {
@@ -23,14 +26,17 @@ public class MapServiceImpl implements MapService {
     
     @Override
     public Long createResource(ResourceRequest request) {
-        resourceMapper.insertResource(request.getType(), request.getLat(), request.getLng(), request.getProps());
-        
-        // 这里简化处理，实际应该返回生成的ID
-        return 1L;
+        Resource resource = new Resource();
+        resource.setType(request.getType());
+        double[] wgs84 = CoordinateTransform.gcj02ToWgs84(request.getLng(), request.getLat());
+        String wkt = String.format("POINT(%f %f)", wgs84[0], wgs84[1]);
+        resource.setGeom(wkt);
+        resource.setProps(request.getProps());
+        return resourceMapper.insertResource(resource);
     }
     
     @Override
-    public Resource getResource(Long id) {
+    public Resource getResourcePoint(Long id) {
         return resourceMapper.getById(id);
     }
     
@@ -42,7 +48,7 @@ public class MapServiceImpl implements MapService {
     
     @Override
     public boolean deleteResource(Long id) {
-        int result = resourceMapper.deleteById(id);
+        Long result = resourceMapper.deleteById(id);
         return result > 0;
     }
     

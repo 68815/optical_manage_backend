@@ -9,7 +9,7 @@ import com.optical.manage.dto.map.MapResponse;
 public interface MapService {
     // 资源点操作
     Long createResource(ResourceRequest request);
-    Resource getResource(Long id);
+    Resource getResourcePoint(Long id);  
     boolean updateResource(Long id, ResourceRequest request);
     boolean deleteResource(Long id);
     

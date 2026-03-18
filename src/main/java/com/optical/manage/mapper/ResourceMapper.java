@@ -13,42 +13,42 @@ import java.util.Map;
 public interface ResourceMapper extends BaseMapper<Resource> {
     
     @Select("<script>" +
-            "SELECT resources_id, type, ST_AsText(geom) AS geom, props, created_at, updated_at " +
+            "SELECT point_id, type, ST_AsText(geom) AS geom, props, created_at, updated_at " +
             "FROM resources " +
-            "WHERE resources_id = #{id}" +
+            "WHERE point_id = #{id}" +
             "</script>")
     Resource getById(Long id);
     
     @Insert("<script>" +
-            "INSERT INTO resources (type, geom, props) " +
-            "VALUES (#{type}, ST_SetSRID(ST_MakePoint(#{lng}, #{lat}), 4326), #{props})" +
+            "INSERT INTO resource_point (name, type, geom, props) " +
+            "VALUES (#{name}, #{type}, ST_GeomFromText(#{geom}), #{props})" +
             "</script>")
-    @Options(useGeneratedKeys = true, keyProperty = "resourcesId")
-    int insertResource(@Param("type") String type, @Param("lat") double lat, @Param("lng") double lng, @Param("props") String props);
+    @Options(useGeneratedKeys = true, keyProperty = "pointId")
+    Long insertResource(Resource resource);
     
     @Insert("<script>" +
-            "INSERT INTO resources (type, geom, props) " +
-            "VALUES ('fiber_segment', ST_SetSRID(ST_MakeLine(" +
+            "INSERT INTO fiber_segment (name, type, geom, props) " +
+            "VALUES (#{name}, #{type}, ST_SetSRID(ST_MakeLine(" +
             "<foreach item='point' collection='points' separator=','>" +
             "ST_MakePoint(#{point.lng}, #{point.lat})" +
             "</foreach>" +
             "), 4326), #{props})" +
             "</script>")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
+    @Options(useGeneratedKeys = true, keyProperty = "pointId")
     int insertFiberSegment(@Param("points") List<Map<String, Double>> points, @Param("props") String props);
     
     @Update("<script>" +
-            "UPDATE resources " +
+            "UPDATE resource_point " +
             "SET type = #{type}, " +
             "geom = ST_SetSRID(ST_MakePoint(#{lng}, #{lat}), 4326), " +
             "props = #{props}, " +
             "updated_at = CURRENT_TIMESTAMP " +
-            "WHERE resources_id = #{id}" +
+            "WHERE point_id = #{id}" +
             "</script>")
     int updateResource(@Param("id") Long id, @Param("type") String type, @Param("lat") double lat, @Param("lng") double lng, @Param("props") String props);
     
     @Update("<script>" +
-            "UPDATE resources " +
+            "UPDATE fiber_segment " +
             "SET geom = ST_SetSRID(ST_MakeLine(" +
             "<foreach item='point' collection='points' separator=','>" +
             "ST_MakePoint(#{point.lng}, #{point.lat})" +
@@ -56,16 +56,16 @@ public interface ResourceMapper extends BaseMapper<Resource> {
             "), 4326), " +
             "props = #{props}, " +
             "updated_at = CURRENT_TIMESTAMP " +
-            "WHERE resources_id = #{id}" +
+            "WHERE point_id = #{id}" +
             "</script>")
     int updateFiberSegment(@Param("id") Long id, @Param("points") List<Map<String, Double>> points, @Param("props") String props);
     
-    @Delete("DELETE FROM resources WHERE resources_id = #{id}")
-    int deleteById(Long id);
+    @Delete("DELETE FROM resource_point WHERE point_id = #{id}")
+    Long deleteById(Long id);
     
     @Select("<script>" +
-            "SELECT resources_id, type, ST_X(geom) AS lng, ST_Y(geom) AS lat, props " +
-            "FROM resources " +
+            "SELECT point_id, type, ST_X(geom) AS lng, ST_Y(geom) AS lat, props " +
+            "FROM resource_point " +
             "WHERE 1=1 " +
             "<if test='resourceTypes != null and resourceTypes.size() > 0'>" +
             "AND type IN " +
@@ -88,8 +88,8 @@ public interface ResourceMapper extends BaseMapper<Resource> {
                                           @Param("limit") Integer limit);
     
     @Select("<script>" +
-            "SELECT resources_id, type, ST_X(geom) AS lng, ST_Y(geom) AS lat, props " +
-            "FROM resources " +
+            "SELECT point_id, type, ST_X(geom) AS lng, ST_Y(geom) AS lat, props " +
+            "FROM resource_point " +
             "WHERE 1=1 " +
             "<if test='resourceTypes != null and resourceTypes.size() > 0'>" +
             "AND type IN " +
@@ -110,7 +110,7 @@ public interface ResourceMapper extends BaseMapper<Resource> {
     
     @Select("<script>" +
             "SELECT COUNT(*) as count " +
-            "FROM resources " +
+            "FROM resource_point " +
             "WHERE 1=1 " +
             "<if test='resourceTypes != null and resourceTypes.size() > 0'>" +
             "AND type IN " +
@@ -131,8 +131,8 @@ public interface ResourceMapper extends BaseMapper<Resource> {
                     @Param("geo") ParsedQuery.GeoConstraint geo);
     
     @Select("<script>" +
-            "SELECT resources_id, type, ST_AsText(geom) AS geom, props " +
-            "FROM resources " +
+            "SELECT point_id, type, ST_AsText(geom) AS geom, props " +
+            "FROM resource_point " +
             "WHERE type = 'fiber_segment' " +
             "<if test='bbox != null'>" +
             "AND geom &amp;&amp; ST_MakeEnvelope(#{bbox.minLng}, #{bbox.minLat}, #{bbox.maxLng}, #{bbox.maxLat}, 4326)" +

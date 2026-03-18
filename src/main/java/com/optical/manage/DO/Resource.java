@@ -10,14 +10,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 @Data
 @TableName("resource_point")
 public class Resource {
-    @TableId(type = IdType.AUTO)
-    private Long resourcesId;
+    @TableId(type = IdType.AUTO, value = "point_id")
+    private Long pointId;
     @TableField("type")
     private String type; // 资源类型：pole, manhole, office, cabinet, base_station 等
     @TableField("name")
     private String name; // 资源名称
-    @TableField("address")
-    private String address; // 资源地址
     @TableField("status")
     private String status; // 资源状态
     @TableField("geom")

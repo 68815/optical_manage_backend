@@ -7,7 +7,10 @@ import com.optical.manage.dto.map.MapResponse;
 import com.optical.manage.service.MapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+import org.springframework.http.ResponseEntity;
 import java.util.Map;
+import com.optical.manage.DO.Resource;
 
 @RestController
 @RequestMapping("/api/v1/map")
@@ -18,49 +21,56 @@ public class MapController {
     
     // 资源点操作
     @PostMapping("/resource-point")
-    public Map<String, Object> createResource(@RequestBody ResourceRequest request) {
+    public Mono<ResponseEntity<Long>> createResource(@RequestBody ResourceRequest request) {
         Long id = mapService.createResource(request);
-        return Map.of("ok", true, "id", id);
+        if(null == id || id <= 0) {
+            return Mono.just(ResponseEntity.badRequest().body(id));
+        }
+        return Mono.just(ResponseEntity.ok(id));
     }
     
     @GetMapping("/resource-point/{id}")
-    public Object getResource(@PathVariable Long id) {
-        return mapService.getResource(id);
+    public Mono<ResponseEntity<Resource>> getResourcePoint(@PathVariable Long id) {
+        Resource resource = mapService.getResourcePoint(id);
+        if(null == resource) {
+            return Mono.just(ResponseEntity.notFound().build());
+        }
+        return Mono.just(ResponseEntity.ok(resource));
     }
     
-    @PutMapping("/resources/{id}")
-    public Map<String, Object> updateResource(@PathVariable Long id, @RequestBody ResourceRequest request) {
+    @PutMapping("/resource-point/{id}")
+    public Mono<ResponseEntity<Map<String, Object>>> updateResource(@PathVariable Long id, @RequestBody ResourceRequest request) {
         boolean success = mapService.updateResource(id, request);
-        return Map.of("ok", success);
+        return Mono.just(ResponseEntity.ok(Map.of("ok", success)));
     }
     
-    @DeleteMapping("/resources/{id}")
-    public Map<String, Object> deleteResource(@PathVariable Long id) {
+    @DeleteMapping("/resource-point/{id}")
+    public Mono<ResponseEntity<Map<String, Object>>> deleteResource(@PathVariable Long id) {
         boolean success = mapService.deleteResource(id);
-        return Map.of("ok", success);
+        return Mono.just(ResponseEntity.ok(Map.of("ok", success)));
     }
     
     // 光缆段操作
     @PostMapping("/fiber-segments")
-    public Map<String, Object> createFiberSegment(@RequestBody FiberSegmentRequest request) {
+    public Mono<Map<String, Object>> createFiberSegment(@RequestBody FiberSegmentRequest request) {
         Long id = mapService.createFiberSegment(request);
-        return Map.of("ok", true, "id", id);
+        return Mono.just(Map.of("ok", true, "id", id));
     }
     
     @PutMapping("/fiber-segments/{id}")
-    public Map<String, Object> updateFiberSegment(@PathVariable Long id, @RequestBody FiberSegmentRequest request) {
+    public Mono<Map<String, Object>> updateFiberSegment(@PathVariable Long id, @RequestBody FiberSegmentRequest request) {
         boolean success = mapService.updateFiberSegment(id, request);
-        return Map.of("ok", success);
+        return Mono.just(Map.of("ok", success));
     }
     
     // 查询功能
     @PostMapping("/query")
-    public MapResponse queryResources(@RequestBody MapQueryRequest request) {
-        return mapService.queryResources(request);
+    public Mono<MapResponse> queryResources(@RequestBody MapQueryRequest request) {
+        return Mono.just(mapService.queryResources(request));
     }
     
     @PostMapping("/fiber-segments/query")
-    public MapResponse getFiberSegments(@RequestBody MapQueryRequest request) {
-        return mapService.getFiberSegments(request);
+    public Mono<MapResponse> getFiberSegments(@RequestBody MapQueryRequest request) {
+        return Mono.just(mapService.getFiberSegments(request));
     }
 }
