@@ -13,8 +13,10 @@ public class MapResponse {
     public static class ResourceInfo {
         private Long id;
         private String type;
+        private String name;
         private double lat;
         private double lng;
+        private String geom;
         private String props;
     }
 }
