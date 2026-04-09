@@ -2,18 +2,11 @@ package com.optical.manage.dto.map;
 
 import lombok.Data;
 import java.util.List;
-import java.math.BigDecimal;
 
 @Data
-public class FiberSegmentRequest {
+public class RoutingRequest {
     private String name;
-    private Long routingId;
-    private String cableLevel;
-    private BigDecimal length;
-    private Integer fiberCount;
-    private Integer tubeCount;
-    private Integer fibersPerTube;
-    private String layingStyle;
+    private String type;
     private List<Point> points;
     private String props;
     

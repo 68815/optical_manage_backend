@@ -294,7 +294,8 @@ public class MapServiceImpl implements MapService {
 
         try {
             List<String> resourceTypes = new ArrayList<>();
-            if (request.getType() != null) {
+            // 如果 type 为 resource 或 null，查询所有资源类型
+            if (request.getType() != null && !"resource".equals(request.getType())) {
                 resourceTypes.add(request.getType());
             }
 
@@ -319,7 +320,8 @@ public class MapServiceImpl implements MapService {
             }
 
             List<Map<String, Object>> result = resourceMapper.searchByFilters(
-                    resourceTypes, filters, minLng, minLat, maxLng, maxLat, request.getLimit());
+                    resourceTypes.isEmpty() ? null : resourceTypes, 
+                    filters, minLng, minLat, maxLng, maxLat, request.getLimit());
 
             for (Map<String, Object> item : result) {
                 MapResponse.ResourceInfo resourceInfo = new MapResponse.ResourceInfo();
@@ -327,8 +329,10 @@ public class MapServiceImpl implements MapService {
                 resourceInfo.setType((String) item.get("type"));
                 resourceInfo.setName((String) item.get("name"));
                 // 直接返回 WGS84 坐标，前端自行转换
-                resourceInfo.setLat((Double) item.get("lat"));
-                resourceInfo.setLng((Double) item.get("lng"));
+                Double lat = item.get("lat") != null ? ((Number) item.get("lat")).doubleValue() : null;
+                Double lng = item.get("lng") != null ? ((Number) item.get("lng")).doubleValue() : null;
+                resourceInfo.setLat(lat != null ? lat : 0.0);
+                resourceInfo.setLng(lng != null ? lng : 0.0);
                 resourceInfo.setProps((String) item.get("props"));
                 resources.add(resourceInfo);
             }

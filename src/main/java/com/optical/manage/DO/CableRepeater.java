@@ -9,32 +9,24 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import java.math.BigDecimal;
 
 @Data
-@TableName("fiber_segment")
-public class FiberSegment {
-    @TableId(type = IdType.AUTO, value = "segment_id")
-    private Long segmentId;
+@TableName("cable_repeater")
+public class CableRepeater {
+    @TableId(type = IdType.AUTO, value = "repeater_id")
+    private Long repeaterId;
     @TableField("name")
     private String name;
     @TableField("start_point_id")
     private Long startPointId;
     @TableField("end_point_id")
     private Long endPointId;
-    @TableField("routing_id")
-    private Long routingId;
-    @TableField("cable_level")
-    private String cableLevel;
+    @TableField("repeater_point_id")
+    private Long repeaterPointId;
     @TableField("length")
     private BigDecimal length;
-    @TableField("fiber_count")
-    private Integer fiberCount;
-    @TableField("tube_count")
-    private Integer tubeCount;
-    @TableField("fibers_per_tube")
-    private Integer fibersPerTube;
-    @TableField("laying_style")
-    private String layingStyle;
-    @TableField("geom")
-    private String geom;
+    @TableField("loss_budget")
+    private BigDecimal lossBudget;
+    @TableField("status")
+    private Integer status;
     @TableField("props")
     private String props;
     @TableField("created_at")

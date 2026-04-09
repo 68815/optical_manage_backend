@@ -4,27 +4,24 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.optical.manage.handler.JsonbTypeHandler;
 import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("resource_point")
-public class Resource {
-    @TableId(type = IdType.AUTO, value = "resource_point_id")
-    private Long resourcePointId;
-    @TableField("type")
-    private String type;
+@TableName("sys_user")
+public class User {
+    @TableId(type = IdType.AUTO, value = "user_id")
+    private Long userId;
     @TableField("name")
     private String name;
-    @TableField("address")
-    private String address;
-    @TableField("status")
-    private Integer status;
-    @TableField("geom")
-    private String geom;
-    @TableField(typeHandler = JsonbTypeHandler.class)
-    private String props;
+    @TableField("password")
+    private String password;
+    @TableField("phone")
+    private String phone;
+    @TableField("email")
+    private String email;
+    @TableField("avatar_url")
+    private String avatarUrl;
     @TableField("created_at")
     private LocalDateTime createdAt;
     @TableField("updated_at")
