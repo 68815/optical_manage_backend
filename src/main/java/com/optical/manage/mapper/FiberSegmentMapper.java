@@ -54,9 +54,14 @@ public interface FiberSegmentMapper extends BaseMapper<FiberSegment> {
             "<if test='minLng != null'>" +
             "AND geom &amp;&amp; ST_MakeEnvelope(#{minLng}, #{minLat}, #{maxLng}, #{maxLat}, 4326) " +
             "</if>" +
+            "<if test='centerLng != null'>" +
+            "AND ST_DWithin(geom, ST_GeomFromText('POINT(' || #{centerLng} || ' ' || #{centerLat} || ')', 4326), #{radiusM}) " +
+            "</if>" +
             "<if test='limit != null'>LIMIT #{limit}</if>" +
             "</script>")
     List<FiberSegment> selectByBbox(@Param("minLng") Double minLng, @Param("minLat") Double minLat,
                                     @Param("maxLng") Double maxLng, @Param("maxLat") Double maxLat,
+                                    @Param("centerLng") Double centerLng, @Param("centerLat") Double centerLat,
+                                    @Param("radiusM") Double radiusM,
                                     @Param("limit") Integer limit);
 }

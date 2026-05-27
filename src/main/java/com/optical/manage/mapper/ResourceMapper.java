@@ -52,14 +52,23 @@ public interface ResourceMapper extends BaseMapper<Resource> {
             "AND props->>#{key} = #{value}" +
             "</foreach>" +
             "</if>" +
+            "<if test='nameFilter != null'>" +
+            "AND (name ILIKE CONCAT('%', #{nameFilter}, '%') OR address ILIKE CONCAT('%', #{nameFilter}, '%')) " +
+            "</if>" +
             "<if test='minLng != null'>" +
             "AND geom &amp;&amp; ST_MakeEnvelope(#{minLng}, #{minLat}, #{maxLng}, #{maxLat}, 4326) " +
+            "</if>" +
+            "<if test='centerLng != null'>" +
+            "AND ST_DWithin(geom, ST_GeomFromText('POINT(' || #{centerLng} || ' ' || #{centerLat} || ')', 4326), #{radiusM}) " +
             "</if>" +
             "<if test='limit != null'>LIMIT #{limit}</if>" +
             "</script>")
     List<Map<String, Object>> searchByFilters(@Param("resourceTypes") List<String> resourceTypes,
                                               @Param("filters") Map<String, Object> filters,
+                                              @Param("nameFilter") String nameFilter,
                                               @Param("minLng") Double minLng, @Param("minLat") Double minLat,
                                               @Param("maxLng") Double maxLng, @Param("maxLat") Double maxLat,
+                                              @Param("centerLng") Double centerLng, @Param("centerLat") Double centerLat,
+                                              @Param("radiusM") Double radiusM,
                                               @Param("limit") Integer limit);
 }

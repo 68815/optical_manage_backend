@@ -300,15 +300,23 @@ public class MapServiceImpl implements MapService {
             }
 
             Map<String, Object> filters = null;
+            String nameFilter = null;
             if (request.getFilter() != null && !request.getFilter().isEmpty()) {
                 filters = new HashMap<>();
                 String[] filterPairs = request.getFilter().split(",");
                 for (String pair : filterPairs) {
                     String[] kv = pair.split("=");
                     if (kv.length == 2) {
-                        filters.put(kv[0].trim(), kv[1].trim());
+                        String key = kv[0].trim();
+                        String value = kv[1].trim();
+                        if ("name".equals(key)) {
+                            nameFilter = value;
+                        } else {
+                            filters.put(key, value);
+                        }
                     }
                 }
+                if (filters.isEmpty()) filters = null;
             }
 
             Double minLng = null, minLat = null, maxLng = null, maxLat = null;
@@ -319,9 +327,17 @@ public class MapServiceImpl implements MapService {
                 maxLat = request.getBbox().getMaxLat();
             }
 
+            Double centerLng = null, centerLat = null, radiusM = null;
+            if (request.getCenterRadius() != null) {
+                centerLng = request.getCenterRadius().getLng();
+                centerLat = request.getCenterRadius().getLat();
+                radiusM = request.getCenterRadius().getRadiusM();
+            }
+
             List<Map<String, Object>> result = resourceMapper.searchByFilters(
-                    resourceTypes.isEmpty() ? null : resourceTypes, 
-                    filters, minLng, minLat, maxLng, maxLat, request.getLimit());
+                    resourceTypes.isEmpty() ? null : resourceTypes,
+                    filters, nameFilter, minLng, minLat, maxLng, maxLat,
+                    centerLng, centerLat, radiusM, request.getLimit());
 
             for (Map<String, Object> item : result) {
                 MapResponse.ResourceInfo resourceInfo = new MapResponse.ResourceInfo();
@@ -361,8 +377,16 @@ public class MapServiceImpl implements MapService {
                 maxLat = request.getBbox().getMaxLat();
             }
 
+            Double centerLng = null, centerLat = null, radiusM = null;
+            if (request.getCenterRadius() != null) {
+                centerLng = request.getCenterRadius().getLng();
+                centerLat = request.getCenterRadius().getLat();
+                radiusM = request.getCenterRadius().getRadiusM();
+            }
+
             List<FiberSegment> segments = fiberSegmentMapper.selectByBbox(
-                    minLng, minLat, maxLng, maxLat, request.getLimit());
+                    minLng, minLat, maxLng, maxLat,
+                    centerLng, centerLat, radiusM, request.getLimit());
 
             for (FiberSegment segment : segments) {
                 MapResponse.ResourceInfo resourceInfo = new MapResponse.ResourceInfo();
